@@ -1,222 +1,163 @@
-# Restaurant System
+# 🍽️ Restaurant System
 
-Restaurant System is a web application for restaurant management. It supports users with roles, menu categories, dishes, tables, orders, ingredients, and basic dashboard workflows.
+**Restaurant System** — це повнофункціональна вебплатформа, розроблена для автоматизації внутрішніх процесів ресторану. Застосунок дозволяє координувати роботу персоналу, керувати меню та відстежувати замовлення.
 
-The project is fully containerized. To run it after cloning the repository, a user only needs Docker Desktop. There is no need to install MySQL, Node.js, Prisma, or project dependencies locally.
+Проєкт повністю контейнеризований за допомогою **Docker**. Це гарантує, що система запуститься на будь-якому комп'ютері без необхідності вручну встановлювати базу даних, Node.js чи інші залежності
 
-## Technologies
+## 🛠 Технологічний стек
 
-- Frontend: React + Vite
+- Frontend: React
 - Backend: Node.js + Express
 - Database: MySQL
 - ORM: Prisma
 - Containers: Docker + Docker Compose
 
-## Project Structure
-
-```text
-restaurant/
-  backend/
-    prisma/
-      migrations/
-      schema.prisma
-    docker-entrypoint.sh
-    dockerfile
-    package.json
-    server.js
-
-  frontend/
-    public/
-    src/
-    dockerfile
-    package.json
-    vite.config.js
-
-  docker/
-    mysql/
-      init/
-        01-restaurant-db.sql
-        02-prisma-baseline.sql
-
-  docker-compose.yml
-  README.md
-```
-
-## Ports
+## 🌐 Порти
 
 | Service | URL / Port |
-| --- | --- |
+
 | Frontend | `http://localhost:5173` |
 | Backend API | `http://localhost:5000/api` |
-| MySQL inside Docker | `db:3306` |
-| MySQL from host machine | `localhost:3307` |
+| MySQL (в Docker мережі) | `db:3306` |
+| MySQL (з хоста) | `localhost:3307` |
 
-MySQL is exposed on host port `3307` because port `3306` is often already used by a local MySQL installation.
+Порт MySQL на хості — 3307, оскільки порт 3306 часто вже використовується локально встановленим MySQL.
 
-## How To Run
+## 🚀 Запуск проекту
 
-Clone the repository:
+1. Клонування репозиторію:
 
 ```bash
-git clone <repository-url>
+git clone <https://github.com/Khrystyna-tkach/Restaurant-system.git>
 cd restaurant
 ```
 
-Build and start all containers:
+2. Запуск контейнерів:
 
 ```bash
 docker compose up -d --build
 ```
 
-Check container status:
+3. Перевірка, чи працюють контейнери:
 
 ```bash
 docker compose ps
 ```
 
-Open the application:
+4. Відкриття застосунку:
 
 ```text
 http://localhost:5173/login
 ```
 
-## Useful Commands
+## 📦 Корисні команди
 
-Show backend logs:
+Перегляд логів бекенду:
 
 ```bash
 docker compose logs -f backend
 ```
 
-Show frontend logs:
+Перегляд логів фронтенду:
 
 ```bash
 docker compose logs -f frontend
 ```
 
-Show database logs:
+Перегляд логів бази даних:
 
 ```bash
 docker compose logs -f db
 ```
 
-Stop containers without deleting database data:
+Зупинка контейнерів без видалення даних бази:
 
 ```bash
 docker compose down
 ```
 
-Stop containers and delete the database volume:
+Зупинка контейнерів та видалення бази даних:
 
 ```bash
 docker compose down -v
 ```
 
-Use `docker compose down -v` only when you want to reset the database completely.
+Використовуйте`docker compose down -v` лише тоді, коли потрібно повністю скинути базу даних.
 
-## Database
+## ⚙️ Керування базою даних
 
-The database runs in a MySQL Docker container.
-
-Database name:
+База даних працює в контейнері MySQL. Назва бази даних:
 
 ```text
 restaurant_db
 ```
 
-Backend connection string inside Docker:
+Бекенд підключається до MySQL всередині Docker за допомогою:
 
 ```text
 mysql://root:root@db:3306/restaurant_db
 ```
 
-Initial database data is stored in:
+Початковий дамп бази даних зберігається у:
 
 ```text
 docker/mysql/init/01-restaurant-db.sql
 ```
 
-When the MySQL container is created for the first time, Docker automatically imports this SQL dump. That is why the project starts with prepared categories, dishes, tables, users, ingredients, and orders.
+Коли контейнер MySQL створюється вперше, Docker автоматично імпортує цей дамп. Це означає, що проєкт починається з підготовленими даними з репозиторію.
 
-Database data is stored in the Docker volume:
+## 🗄️ Міграції бази даних
 
-```text
-mysql_data
-```
-
-Data is preserved between restarts while this volume exists.
-
-## Migrations
-
-Prisma migrations are stored in:
-
-```text
-backend/prisma/migrations
-```
-
-The project uses MySQL migrations. When the backend container starts, it runs:
+Під час запуску бекенду Prisma синхронізує схему бази даних за допомогою:
 
 ```bash
-npx prisma migrate deploy
+npx prisma db push
 ```
 
-Run migrations manually:
+Цю команду також можна виконати вручну всередині контейнера бекенду:
 
 ```bash
-docker compose exec backend npx prisma migrate deploy
+docker compose exec backend npx prisma db push
 ```
 
-Regenerate Prisma Client manually:
-
-```bash
-docker compose exec backend npx prisma generate
-```
-
-Reset the Docker database and import the initial data again:
+Якщо потрібно скинути базу даних та ініціалізувати її знову з SQL дампу:
 
 ```bash
 docker compose down -v
 docker compose up -d --build
 ```
 
-## How To Use The Application
+## 📖 Використання застосунку
 
-1. Open `http://localhost:5173/login`.
-2. Log in with an existing test account or register a new user.
-3. Use the sidebar to navigate through the main sections:
-   - Dashboard
-   - Menu
-   - Categories
-   - Tables
-   - Orders
-   - Ingredients
-4. Available actions depend on the user role:
-   - `ADMIN`
-   - `WAITER`
-   - `CHEF`
+1. Перейдіть на сторінку: `http://localhost:5173/login`.
+2. Авторизуйтесь або зареєструйте нового користувача відповідно до ролі.
+3. Використовуйте бічне меню для навігації по основних розділах:
+   - Панель управління
+   - Меню
+   - Категорії
+   - Столи
+   - Замовлення
+   - Інгредієнти
+4. Доступ до функцій системи суворо розмежований залежно від ролі користувача:
 
-## Test Accounts
+*   **👤 Адміністратор (ADMIN)**:
+    *   Керування меню та категоріями страв, замовленнями.
+    *   Налаштування схеми столиків.
+    *   Перегляд аналітики та історії замовлень.
+*   **🤵 Офіціант (WAITER)**:
+    *   Створення нових замовлень для клієнтів.
+    *   Оновлення статусів замовлень та столиків.
+*   **👨‍🍳 Шеф-кухар (CHEF)**:
+    *   Перегляд активних замовлень для приготування та зміна статусу замовлення.
+    *   Моніторинг залишків інгредієнтів та оновлення інформації про склад.
+## 🔑 Дані для входу (Тестові акаунти)
 
-| Role | Email | Password |
-| --- | --- | --- |
-| ADMIN | `lo@gmail.com` | `11111111` |
-| WAITER | `tkachristina079@gmail.com` | `111111` |
-| CHEF | `ro@gmail.com` | `11111111` |
+Для тестування функціоналу ви можете скористатися вже створеними обліковими записами з різними ролями:
 
-## Why Data Is Preserved
-
-The initial data is included in the repository as a MySQL dump. Docker imports it only when the database volume is created for the first time.
-
-This keeps existing data:
-
-```bash
-docker compose down
-docker compose up -d
-```
-
-This deletes all database data and recreates it from the SQL dump:
-
-```bash
-docker compose down -v
+| Роль | Email | Пароль |
+| :--- | :--- | :--- |
+| **Адміністратор** | `lo@gmail.com` | `11111111` |
+| **Офіціант** | `tkachristina079@gmail.com` | `111111` |
+| **Кухар** | `ro@gmail.com` | `11111111` |
 docker compose up -d --build
 ```
