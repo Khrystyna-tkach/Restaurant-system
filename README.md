@@ -108,16 +108,22 @@ docker/mysql/init/01-restaurant-db.sql
 
 ## 🗄️ Міграції бази даних
 
-Під час запуску бекенду Prisma синхронізує схему бази даних за допомогою:
+Міграції Prisma зберігаються в:
 
 ```bash
-npx prisma db push
+backend/prisma/migrations
 ```
 
-Цю команду також можна виконати вручну всередині контейнера бекенду:
+Проект використовує MySQL міграції. Коли запускається backend контейнер, він запускає:
 
 ```bash
-docker compose exec backend npx prisma db push
+npx prisma migrate deploy
+```
+
+Запуск міграцій вручну:
+
+```bash
+docker compose exec backend npx prisma migrate deploy
 ```
 
 Якщо потрібно скинути базу даних та ініціалізувати її знову з SQL дампу:
