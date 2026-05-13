@@ -47,7 +47,7 @@ docker compose ps
 4. Відкриття застосунку:
 
 ```text
-http://localhost:5173
+http://localhost:5173/login
 ```
 
 ## 💻 Корисні команди
